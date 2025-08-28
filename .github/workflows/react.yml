@@ -1,0 +1,67 @@
+name: React CI/CD
+
+#1 Trigger event - When should this workflow run?
+on: 
+  push:
+    branches: [main]
+
+# 2. ENVIRONMENT VARIABLES (Optional)
+env:
+  REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
+  REACT_APP_TITLE: "Taskflow App"
+  NODE_VERSION: '18'
+  CI: true
+  NODE_ENV: production
+
+#3 JOBS DEFINITION
+jobs:
+ #4 Job 1: Build and Test
+  build-and-test:
+    name: Build and Test
+  #5 Running evnvironment
+    runs-on: ubuntu-latest
+  #6. JOB STRATEGY (Optional - for multiple versions)
+    strategy:
+      matrix:
+        node-version: [16, 18, 20] 
+  # 6. JOB STEPS
+    steps:
+    #7  Checkout code from repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+    #7  Setup Node.js environment
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'  # Cache npm dependencies
+    #8 Install dependencies
+      - name: Install dependencies
+        run: npm ci
+    #9 LINT CODE
+      - name: RUN EsLint
+        run: npm run lint
+    #10 Run test
+      - name: Run test
+        run: npm run test
+    #11 BUILD PROJECT
+      - name: Build project
+        run: npm run build
+    #12. UPLOAD BUILD ARTIFACTS
+      - name: Upload build ARTIFACTS
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-files
+          path: build/
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/deploy' && matrix.node-version == '20'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build
+
+
+
+    
+
+ 
