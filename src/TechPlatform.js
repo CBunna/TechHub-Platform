@@ -122,7 +122,7 @@ const TechPlatform = () => {
       
       return matchesCategory && matchesSearch;
     });
-  }, [searchQuery, selectedCategory]);
+  }, [searchQuery, selectedCategory, resources]);
 
   const featuredResources = resources.filter(r => r.featured);
 
