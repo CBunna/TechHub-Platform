@@ -13,7 +13,7 @@ const TechPlatform = () => {
     { id: 'cloud', name: 'Cloud', icon: Cloud, color: 'from-indigo-500 to-purple-500' },
   ];
 
-  const resources = [
+  const resources = useMemo(() => [
     {
       id: 1,
       title: 'Complete Docker Guide for Developers',
@@ -110,7 +110,7 @@ const TechPlatform = () => {
       featured: false,
       type: 'Deep Dive'
     }
-  ];
+  ], []);
 
   const filteredResources = useMemo(() => {
     return resources.filter(resource => {
